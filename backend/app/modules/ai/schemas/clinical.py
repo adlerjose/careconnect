@@ -13,41 +13,34 @@ class ClinicalExtractionResult(BaseModel):
     """
     model_config = ConfigDict(
         str_strip_whitespace=True,
-        extra="forbid",
         validate_assignment=True,
     )
 
     symptoms: List[str] = Field(
         default_factory=list,
         description="Lista de sintomas expressamente relatados pelo paciente (sem inferências diagnósticas).",
-        examples=[["cefaleia", "febre"]],
     )
     duration: Optional[str] = Field(
         default=None,
         description="Duração ou tempo de evolução dos sintomas conforme informado pelo paciente (ex: '2 dias', 'desde ontem').",
-        examples=["2 dias"],
     )
     medications: List[str] = Field(
         default_factory=list,
         description="Medicamentos que o paciente informou estar utilizando ou haver ingerido.",
-        examples=[["dipirona 500mg"]],
     )
     clinical_summary: Optional[str] = Field(
         default=None,
         description="Resumo descritivo e objetivo do relato clínico original, preservando a fala do paciente.",
-        examples=["Paciente relata dor de cabeça de forte intensidade há 2 dias, fez uso de analgésico sem melhora."],
     )
     confidence: Optional[float] = Field(
         default=None,
         ge=0.0,
         le=1.0,
         description="Grau de certeza ou aderência semântica estimado pelo modelo na extração (intervalo [0.0, 1.0]).",
-        examples=[0.85],
     )
     requires_human_review: bool = Field(
         default=False,
         description="Sinalizador de revisão obrigatória por profissional de saúde devido a ambiguidades ou baixa clareza.",
-        examples=[False],
     )
 
     @field_validator("symptoms", "medications")
