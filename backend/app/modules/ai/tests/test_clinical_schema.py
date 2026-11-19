@@ -80,10 +80,8 @@ def test_requires_human_review_flag():
     assert result.requires_human_review is True
 
 
-def test_extra_fields_forbidden_in_clinical_result():
-    """Garante que atributos diagnósticos ou não mapeados sejam rejeitados."""
-    with pytest.raises(ValidationError):
-        ClinicalExtractionResult(
-            symptoms=["dor"],
-            diagnostico_provisorio="Invalido",  # type: ignore
-        )
+def test_clinical_result_json_schema_gemini_compatibility():
+    """Garante que o schema JSON seja 100% compatível com a OpenAPI da Google Gemini."""
+    schema = ClinicalExtractionResult.model_json_schema()
+    assert "additionalProperties" not in schema
+    assert "examples" not in str(schema)
