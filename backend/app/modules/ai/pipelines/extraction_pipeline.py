@@ -40,7 +40,12 @@ class ClinicalExtractionPipeline:
             if message.message_type == MessageType.TEXT:
                 result = await self.provider.process_text(text=message)
             elif message.message_type == MessageType.AUDIO:
-                result = await self.provider.process_audio(audio_url=message.audio_url or "")
+                import inspect
+                sig = inspect.signature(self.provider.process_audio)
+                if "audio" in sig.parameters:
+                    result = await self.provider.process_audio(audio=message)
+                else:
+                    result = await self.provider.process_audio(audio_url=message.audio_url or "")
             else:
                 raise AIModuleError(f"Tipo de mensagem não suportado: {message.message_type}")
 

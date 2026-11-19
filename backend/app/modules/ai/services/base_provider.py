@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Union
+from pathlib import Path
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from app.modules.ai.schemas.input import AIMessageInput
@@ -40,12 +41,21 @@ class BaseAIProvider(ABC):
         pass
 
     @abstractmethod
-    async def process_audio(self, audio_url: str) -> ClinicalExtractionResult:
+    async def process_audio(
+        self,
+        audio: Optional[Union["AIMessageInput", bytes, str, Path]] = None,
+        mime_type: Optional[str] = None,
+        *,
+        audio_url: Optional[str] = None,
+    ) -> ClinicalExtractionResult:
         """
-        Processa um arquivo de áudio referenciado e extrai as informações clínicas estruturadas.
+        Processa um arquivo ou conteúdo binário de áudio e extrai as informações clínicas estruturadas.
         
-        :param audio_url: URL ou referência para obtenção do áudio do paciente.
+        :param audio: Instância de AIMessageInput, bytes brutos, caminho de arquivo local (str ou Path).
+        :param mime_type: MIME type do áudio (ex: 'audio/ogg', 'audio/mp3', 'audio/wav').
+        :param audio_url: Parâmetro nomeado de compatibilidade para referências locais de áudio.
         :return: ClinicalExtractionResult com os dados clínicos extraídos.
         :raises AIProviderError: Em caso de falha de comunicação ou processamento.
+        :raises AIExtractionError: Em caso de áudio vazio, formato inválido ou falha de estruturação.
         """
         pass

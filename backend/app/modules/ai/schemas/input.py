@@ -44,8 +44,16 @@ class AIMessageInput(BaseModel):
     )
     audio_url: Optional[str] = Field(
         default=None,
-        description="Referência ou URL para obtenção do arquivo de áudio.",
+        description="Referência de identificação ou caminho do arquivo de áudio.",
         examples=["https://storage.careconnect.local/audios/patient-1234-msg-001.ogg"],
+    )
+    audio_bytes: Optional[bytes] = Field(
+        default=None,
+        description="Bytes brutos do arquivo de áudio recebido e validado previamente pela camada de backend.",
+    )
+    mime_type: Optional[str] = Field(
+        default=None,
+        description="MIME type informado ou detectado do arquivo de áudio (ex: 'audio/ogg', 'audio/mp3', 'audio/wav').",
     )
 
     @field_validator("message_id", "patient_id")
@@ -60,7 +68,7 @@ class AIMessageInput(BaseModel):
         """
         Valida a consistência entre o message_type e a presença dos dados necessários:
         - TEXT: exige 'content' preenchido.
-        - AUDIO: exige 'audio_url' preenchido.
+        - AUDIO: exige 'audio_url' ou 'audio_bytes' preenchido.
         Não exige ambos simultaneamente.
         """
         if self.message_type == MessageType.TEXT:
@@ -70,9 +78,11 @@ class AIMessageInput(BaseModel):
                 )
 
         elif self.message_type == MessageType.AUDIO:
-            if not self.audio_url or not self.audio_url.strip():
+            has_url = bool(self.audio_url and self.audio_url.strip())
+            has_bytes = bool(self.audio_bytes and len(self.audio_bytes) > 0)
+            if not has_url and not has_bytes:
                 raise ValueError(
-                    "Mensagens do tipo AUDIO exigem o preenchimento obrigatório e não vazio do campo 'audio_url'."
+                    "Mensagens do tipo AUDIO exigem o preenchimento obrigatório de 'audio_url' ou 'audio_bytes'."
                 )
 
         return self
