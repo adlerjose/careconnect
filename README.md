@@ -199,3 +199,46 @@ Ou executando a partir da raiz do repositório:
 ```bash
 PYTHONPATH=backend pytest backend/tests -v
 ```
+
+---
+
+## 8. Stack local e webhook WhatsApp (M1)
+
+Na pasta `backend`, copie `.env.example` para `.env`, ajuste `EVOLUTION_API_KEY` e
+inicie a stack:
+
+```bash
+docker compose up -d --build
+```
+
+O Compose aplica as migrations Alembic antes de iniciar a API. A Evolution API
+envia eventos `messages.upsert` para `POST /webhook/whatsapp`; a rota valida o
+header `apikey` e agenda a persistência de mensagens recebidas como tarefa em
+background. Eventos de conexão, mensagens enviadas pela própria instância,
+grupos e status são ignorados. Mensagens de texto e áudio são armazenadas com o
+payload bruto; mensagens ainda não processadas ficam com `processed_at` nulo.
+
+Exemplo de teste local (substitua o header pelo valor configurado no `.env`):
+
+```bash
+curl -X POST http://localhost:8000/webhook/whatsapp \
+  -H 'Content-Type: application/json' \
+  -H 'apikey: troque_esta_chave_em_producao' \
+  -d '{
+    "event": "messages.upsert",
+    "instance": "careconnect-dev",
+    "data": {
+      "key": {
+        "remoteJid": "558699999999@s.whatsapp.net",
+        "id": "TEST_MSG_123"
+      },
+      "pushName": "Paciente de teste",
+      "message": {"conversation": "Mensagem de teste"}
+    }
+  }'
+```
+
+O endpoint confirma o recebimento antes da persistência em background. O HTTP
+200, portanto, não confirma que o commit no banco terminou; `BackgroundTasks`
+é adequado ao escopo inicial, mas não substitui uma fila durável para garantias
+de processamento em caso de reinício do processo.

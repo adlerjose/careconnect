@@ -13,6 +13,7 @@ import uvicorn
 
 from app.api.routes import api_router
 from app.api.routes.health import router as health_router
+from app.api.routes.webhook import router as webhook_router
 from app.core.config import settings
 from app.core.logging import get_logger, setup_logging
 
@@ -54,6 +55,7 @@ def create_application() -> FastAPI:
 
     # Rota raiz de integridade (GET /health) para monitoramento direto
     application.include_router(health_router, tags=["Health"])
+    application.include_router(webhook_router)
 
     # Rotas versionadas sob o prefixo da API (/api/v1/...)
     application.include_router(api_router, prefix=settings.API_V1_PREFIX)

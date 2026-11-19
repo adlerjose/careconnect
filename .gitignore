@@ -59,6 +59,18 @@ logs/
 *.seed
 *.sublime-workspace
 
+# Volumes locais do Docker
+postgres_data/
+evolution_instances/
+
+# Dados sensíveis (LGPD)
+data/raw/
+data/processed/
+fixtures/real_*
+*.pid
+*.seed
+*.sublime-workspace
+
 # IDEs e Editores
 .idea/
 .vscode/
