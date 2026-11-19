@@ -1,1 +1,201 @@
-# careconnect
+# CareConnect PI
+
+Plataforma de acompanhamento pós-atendimento e triagem auxiliar de pacientes por meio do WhatsApp com suporte de Inteligência Artificial.
+
+---
+
+## 1. Visão Geral e Objetivo
+
+O **CareConnect PI** é uma solução voltada para instituições de saúde e equipes médicas com o propósito de manter um canal proativo de comunicação com pacientes após consultas, procedimentos ou altas hospitalares.
+
+### Fluxo Operacional
+1. O paciente envia relatos em mensagem de texto ou áudio pelo WhatsApp.
+2. O gateway de comunicação (**Evolution API**) recebe a mensagem e aciona os webhooks do backend.
+3. O backend processa os dados e submete o conteúdo clínico não estruturado ao módulo de Inteligência Artificial (**Google Gemini**).
+4. O módulo de IA extrai dados clínicos relevantes (sintomas reportados, tempo de evolução, medicamentos em uso) e gera uma **classificação auxiliar de prioridade**.
+5. As informações estruturadas são validadas e armazenadas em banco de dados **PostgreSQL**.
+6. Uma aplicação web responsiva em **React** disponibiliza um painel de controle para que os profissionais de saúde acompanhem os pacientes e priorizem atendimentos.
+
+> **Aviso Ético e Legal**: O sistema CareConnect e seus módulos de IA realizam triagem e suporte operacional auxiliar. A plataforma **NÃO diagnostica doenças, NÃO prescreve medicamentos e NÃO substitui a avaliação de um profissional de saúde qualificado**.
+
+---
+
+## 2. Tecnologias Utilizadas
+
+### Backend
+- **Linguagem**: [Python 3.11+](https://www.python.org/)
+- **Framework Web**: [FastAPI](https://fastapi.tiangolo.com/) (assíncrono, alta performance e tipagem estática)
+- **Validação de Dados e Configuração**: [Pydantic v2](https://docs.pydantic.dev/) e `pydantic-settings`
+- **Servidor ASGI**: [Uvicorn](https://www.uvicorn.org/)
+- **Testes Automatizados**: [Pytest](https://docs.pytest.org/) e [HTTPX](https://www.python-httpx.org/)
+
+### Tecnologias em Fases Futuras
+- **Banco de Dados**: PostgreSQL (persistência relacional)
+- **Módulo de IA**: Google Gemini API (modelos de linguagem multimodal)
+- **Gateway WhatsApp**: Evolution API
+- **Containerização**: Docker e Docker Compose
+- **Frontend**: React (SPA desenvolvida pela equipe de interface)
+
+---
+
+## 3. Estrutura de Diretórios
+
+O projeto adota uma arquitetura de **Monólito Modular**, permitindo divisão clara de responsabilidades, alta coesão e independência entre os membros da equipe:
+
+```text
+careconnect/
+├── backend/
+│   ├── .env.example              # Modelo documentado de variáveis de ambiente
+│   ├── requirements.txt          # Dependências mínimas essenciais do backend
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py               # Ponto de entrada FastAPI, middlewares e lifespans
+│   │   ├── core/                 # Núcleo compartilhado da aplicação
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py         # Configurações centralizadas via Pydantic Settings
+│   │   │   └── logging.py        # Configuração de logs padronizados
+│   │   ├── api/                  # Camada de transporte HTTP e roteamento
+│   │   │   ├── __init__.py
+│   │   │   └── routes/
+│   │   │       ├── __init__.py   # Agregador central de rotas versionadas
+│   │   │       └── health.py     # Endpoint GET /health e schemas de integridade
+│   │   ├── modules/              # Módulos de domínio de negócio isolados
+│   │   │   ├── __init__.py
+│   │   │   ├── ai/               # Módulo de Inteligência Artificial (Google Gemini)
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pipelines/    # Pipelines de processamento de texto e áudio
+│   │   │   │   ├── prompts/      # Engenharia de prompts e templates
+│   │   │   │   ├── schemas/      # Schemas de extração e resposta da IA
+│   │   │   │   ├── services/     # Clientes de comunicação com a API Gemini
+│   │   │   │   └── tests/        # Testes específicos do módulo de IA
+│   │   │   ├── messages/         # Recepção e processamento de mensagens do WhatsApp
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── schemas/
+│   │   │   │   └── services/
+│   │   │   ├── patients/         # Gestão de pacientes e dados cadastrais
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── schemas/
+│   │   │   │   └── services/
+│   │   │   └── triage/           # Regras de triagem e classificação de risco
+│   │   │       ├── __init__.py
+│   │   │       ├── schemas/
+│   │   │       └── services/
+│   │   └── shared/               # Utilitários compartilhados transversais
+│   │       └── __init__.py
+│   └── tests/                    # Suíte de testes automatizados da aplicação
+│       ├── __init__.py
+│       ├── conftest.py           # Fixtures do Pytest (TestClient HTTP)
+│       └── test_health.py        # Testes de disponibilidade e integridade
+├── .gitignore                    # Regras de exclusão Git (Python, venv, .env, IDEs)
+└── README.md                     # Documentação técnica do projeto
+```
+
+---
+
+## 4. Pré-requisitos
+
+- **Python 3.11** ou superior instalado no sistema.
+- **Git** configurado.
+
+---
+
+## 5. Como Executar o Backend
+
+### 5.1. Clonar o repositório e acessar a pasta do backend
+
+```bash
+git clone https://github.com/<seu-usuario>/careconnect.git
+cd careconnect/backend
+```
+
+### 5.2. Criar e ativar o ambiente virtual
+
+No Linux / macOS:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+No Windows (PowerShell):
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+### 5.3. Instalar as dependências
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 5.4. Configurar as variáveis de ambiente
+
+Crie uma cópia do arquivo de exemplo `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Edite o arquivo `.env` caso deseje alterar portas, origens CORS ou chaves para integrações locais.
+
+### 5.5. Executar o servidor de desenvolvimento
+
+Com o ambiente virtual ativado:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Ou diretamente via Python:
+
+```bash
+python -m app.main
+```
+
+A API estará disponível em: **`http://localhost:8000`**
+
+---
+
+## 6. Documentação Interativa da API
+
+Com a aplicação em execução, acesse a documentação OpenAPI gerada automaticamente:
+
+- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- **OpenAPI JSON**: [http://localhost:8000/api/v1/openapi.json](http://localhost:8000/api/v1/openapi.json)
+
+### Endpoint de Health Check
+
+- **GET `/health`** ou **GET `/api/v1/health`**
+- **Resposta esperada (`200 OK`)**:
+  ```json
+  {
+    "status": "ok",
+    "app_name": "CareConnect PI",
+    "version": "0.1.0",
+    "environment": "development"
+  }
+  ```
+
+---
+
+## 7. Execução dos Testes Automatizados
+
+Com o ambiente virtual ativo, execute a suíte de testes a partir do diretório `backend`:
+
+```bash
+pytest
+```
+
+Para visualização detalhada com saída verbosa:
+
+```bash
+pytest -v
+```
+
+Ou executando a partir da raiz do repositório:
+
+```bash
+PYTHONPATH=backend pytest backend/tests -v
+```
