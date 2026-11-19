@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from app.core.config import settings
 from app.modules.messages import models as message_models
 from app.modules.patients import models as patient_models
+from app.modules.triage import models as triage_models
 from app.shared.database import Base
 
 config = context.config
