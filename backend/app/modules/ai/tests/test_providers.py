@@ -371,9 +371,9 @@ async def test_gemini_generic_api_error_mapping():
 
 
 @pytest.mark.anyio
-async def test_gemini_process_audio_not_implemented():
-    """Garante que o processamento de áudio permaneça sinalizado como não implementado."""
+async def test_gemini_process_audio_blocks_remote_url_ssrf():
+    """Garante que o processamento de áudio bloqueie ativamente URLs remotas (prevenção SSRF)."""
     provider = GeminiProvider(api_key="fake-key")
-    with pytest.raises(NotImplementedError) as exc_info:
-        await provider.process_audio("https://storage.local/audio.ogg")
-    assert "não está ativo nesta versão do MVP" in str(exc_info.value)
+    with pytest.raises(AIExtractionError) as exc_info:
+        await provider.process_audio(audio_url="https://storage.local/audio.ogg")
+    assert "SSRF" in str(exc_info.value)
