@@ -1,4 +1,9 @@
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Union
+
+if TYPE_CHECKING:
+    from app.modules.ai.schemas.input import AIMessageInput
+
 from app.modules.ai.schemas.clinical import ClinicalExtractionResult
 
 
@@ -23,13 +28,14 @@ class BaseAIProvider(ABC):
         pass
 
     @abstractmethod
-    async def process_text(self, text: str) -> ClinicalExtractionResult:
+    async def process_text(self, text: Union["AIMessageInput", str]) -> ClinicalExtractionResult:
         """
-        Processa um conteúdo textual bruto e extrai as informações clínicas estruturadas.
+        Processa um conteúdo textual ou contrato AIMessageInput e extrai as informações clínicas estruturadas.
         
-        :param text: Mensagem textual enviada pelo paciente.
+        :param text: Mensagem textual enviada pelo paciente ou instância de AIMessageInput.
         :return: ClinicalExtractionResult com os dados clínicos extraídos.
         :raises AIProviderError: Em caso de falha de comunicação ou processamento.
+        :raises AIExtractionError: Em caso de resposta inválida ou falha de estruturação.
         """
         pass
 

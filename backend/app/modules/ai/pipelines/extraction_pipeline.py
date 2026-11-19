@@ -38,10 +38,8 @@ class ClinicalExtractionPipeline:
 
         try:
             if message.message_type == MessageType.TEXT:
-                # O validador do Pydantic assegura que content não é None para TEXT
-                result = await self.provider.process_text(text=message.content or "")
+                result = await self.provider.process_text(text=message)
             elif message.message_type == MessageType.AUDIO:
-                # O validador do Pydantic assegura que audio_url não é None para AUDIO
                 result = await self.provider.process_audio(audio_url=message.audio_url or "")
             else:
                 raise AIModuleError(f"Tipo de mensagem não suportado: {message.message_type}")

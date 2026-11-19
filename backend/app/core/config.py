@@ -1,16 +1,20 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import List, Union
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
+ENV_FILE_PATH = BACKEND_DIR / ".env"
 
 
 class Settings(BaseSettings):
     """
     Configurações centrais da aplicação CareConnect.
-    Carrega valores a partir de variáveis de ambiente ou arquivo .env local.
+    Carrega valores a partir de variáveis de ambiente ou arquivo backend/.env local.
     """
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=ENV_FILE_PATH if ENV_FILE_PATH.exists() else ".env",
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
@@ -50,7 +54,8 @@ class Settings(BaseSettings):
 
     # Provedor de IA (Google Gemini)
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_MODEL: str = "gemini-3.5-flash-lite"
+    GEMINI_TIMEOUT: float = 30.0
 
     # Gateway de Mensagens (Evolution API)
     EVOLUTION_API_URL: str = ""
