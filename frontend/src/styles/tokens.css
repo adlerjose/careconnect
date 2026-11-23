@@ -1,0 +1,114 @@
+/*
+ * Design tokens do CareConnect.
+ * Fonte única de verdade para cores, tipografia, grid, raios e sombras,
+ * derivada da documentação UI/UX e das referências visuais.
+ */
+:root {
+  /* ---- Paleta ---- */
+  --color-ink: #0a0a0a;
+  --color-white: #ffffff;
+  --color-linen: #f8f4ef;
+  --color-sepia: #a0724f;
+  --color-sand: #e9c4a6;
+  --color-stone: #5e5e5e;
+  --color-clay: #c98a5e;
+
+  /* Derivados (transparências da própria paleta) */
+  --color-ink-80: rgba(10, 10, 10, 0.8);
+  --color-line: rgba(10, 10, 10, 0.08);
+  --color-line-strong: rgba(10, 10, 10, 0.14);
+  --color-sand-soft: rgba(233, 196, 166, 0.35);
+  --color-sepia-soft: rgba(160, 114, 79, 0.1);
+
+  /* Estados (sempre acompanhados de ícone + texto) */
+  --color-success: #3f6b4f;
+  --color-success-soft: rgba(63, 107, 79, 0.1);
+  --color-danger: #a1402d;
+  --color-danger-soft: rgba(161, 64, 45, 0.09);
+  --color-warning: var(--color-sepia);
+  --color-warning-soft: var(--color-sepia-soft);
+
+  /* Gradiente de referência "Sepia Glow" */
+  --gradient-sepia-glow: linear-gradient(160deg, var(--color-linen) 0%, var(--color-sand) 100%);
+
+  /* ---- Tipografia ---- */
+  --font-sans: 'Neue Montreal', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+
+  --fs-display: 56px;
+  --fs-heading: 40px;
+  --fs-card-title: 24px;
+  --fs-body-lg: 18px;
+  --fs-body: 16px;
+  --fs-small: 14px;
+  --fs-label: 12px;
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.2;
+  --lh-body: 1.55;
+
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.015em;
+  --tracking-label: 0.06em;
+
+  /* ---- Grid (frame de referência 1440 / 12 col / 24 gutter / 64 margem) ---- */
+  --frame-max: 1440px;
+  --grid-columns: 12;
+  --grid-gutter: 24px;
+  --grid-margin: 64px;
+
+  /* ---- Espaçamento (base 4) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ---- Superfícies ---- */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(10, 10, 10, 0.04);
+  --shadow-md: 0 1px 2px rgba(10, 10, 10, 0.04), 0 12px 32px -16px rgba(80, 52, 30, 0.18);
+  --shadow-lg: 0 2px 4px rgba(10, 10, 10, 0.04), 0 24px 56px -24px rgba(80, 52, 30, 0.28);
+
+  --focus-ring: 0 0 0 3px var(--color-linen), 0 0 0 5px var(--color-sepia);
+
+  --header-height: 72px;
+  --transition: 160ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Notebook / tablet */
+@media (max-width: 1024px) {
+  :root {
+    --grid-columns: 8;
+    --grid-margin: 32px;
+    --fs-display: 48px;
+    --fs-heading: 34px;
+  }
+}
+
+/* Smartphone */
+@media (max-width: 640px) {
+  :root {
+    --grid-columns: 4;
+    --grid-gutter: 16px;
+    --grid-margin: 20px;
+    --fs-display: 38px;
+    --fs-heading: 30px;
+    --fs-card-title: 21px;
+    --header-height: 64px;
+  }
+}
