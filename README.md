@@ -29,12 +29,19 @@ O **CareConnect PI** é uma solução voltada para instituições de saúde e eq
 - **Servidor ASGI**: [Uvicorn](https://www.uvicorn.org/)
 - **Testes Automatizados**: [Pytest](https://docs.pytest.org/) e [HTTPX](https://www.python-httpx.org/)
 
+### Frontend
+- **Framework**: React 18 com React Router 6
+- **Build**: Vite 5
+- **Linguagem**: TypeScript strict
+- **Estilos**: CSS puro com design tokens centralizados
+- **Testes**: Vitest e Testing Library
+- **Porta local**: `3000`
+
 ### Tecnologias em Fases Futuras
 - **Banco de Dados**: PostgreSQL (persistência relacional)
 - **Módulo de IA**: Google Gemini API (modelos de linguagem multimodal)
 - **Gateway WhatsApp**: Evolution API
 - **Containerização**: Docker e Docker Compose
-- **Frontend**: React (SPA desenvolvida pela equipe de interface)
 
 ---
 
@@ -242,3 +249,66 @@ O endpoint confirma o recebimento antes da persistência em background. O HTTP
 200, portanto, não confirma que o commit no banco terminou; `BackgroundTasks`
 é adequado ao escopo inicial, mas não substitui uma fila durável para garantias
 de processamento em caso de reinício do processo.
+
+---
+
+## 9. Frontend web (branch `develop-front`)
+
+O frontend React foi integrado ao repositório na branch `develop-front`.
+Os arquivos da interface ficam isolados no diretório `frontend/`, sem misturar
+código da SPA com os módulos Python do backend.
+
+### 9.1. Estrutura do frontend
+
+- React 18, React Router 6 e TypeScript strict.
+- Vite 5 para desenvolvimento e build de produção.
+- Vitest e Testing Library para testes automatizados.
+- Desenvolvimento na porta `3000`.
+- Proxy de `/api` e `/health` para o backend em `http://localhost:8000`.
+
+### 9.2. Execução completa
+
+Em terminais separados:
+
+```bash
+# Backend
+cd backend
+python -m pip install -r requirements.txt
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+# Frontend
+cd frontend
+npm install
+npm run dev -- --host 0.0.0.0
+```
+
+A interface estará em `http://localhost:3000` e a API em
+`http://localhost:8000`.
+
+### 9.3. Telas disponíveis
+
+| Rota | Tela |
+| --- | --- |
+| `/` | Dashboard operacional |
+| `/pacientes` | Lista de pacientes |
+| `/pacientes/ficha` | Ficha do paciente |
+| `/mensagens` | Mensagens |
+| `/triagem` | Triagem |
+| `/sistema` | Estado e documentação do sistema |
+
+As telas de Pacientes, Mensagens e Triagem são protótipos visuais funcionais:
+os endpoints de leitura ainda não existem no backend e a interface informa
+essa condição em vez de inventar dados.
+
+### 9.4. Validação realizada
+
+- `20` testes Vitest passaram.
+- `npm run build` concluiu a geração do bundle de produção.
+- Os endpoints `/health` e `/api/v1/health` responderam com `status: "ok"` no
+  ambiente local.
+- O dashboard, a lista de pacientes, a ficha, mensagens, triagem e sistema
+  foram carregados no navegador em uma resolução de desktop.
+
+O build pode emitir avisos para os arquivos comerciais da Neue Montreal,
+ausentes no repositório. Nesse caso, a interface usa a fonte Inter
+auto-hospedada como substituta.

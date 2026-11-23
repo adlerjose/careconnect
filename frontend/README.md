@@ -96,3 +96,35 @@ auto-hospedada) como **substituta** — que não é a Neue Montreal. Veja `publi
 Link “Pular para o conteúdo”, foco visível, navegação por teclado (menu móvel fecha com Esc),
 estados sempre com ícone + texto, `aria-current` na página ativa, `aria-live` no status da API e
 respeito a `prefers-reduced-motion`.
+
+## Integração da branch `develop-front`
+
+A branch `develop-front` contém esta aplicação React dentro do monorepositório,
+na pasta `frontend/`. A inclusão foi registrada no commit local
+`feat: add frontend to develop-front` após a criação da branch.
+
+## Verificação de interface
+
+Em 23 de novembro de 2026, o sistema foi executado localmente em:
+
+- Backend: `http://localhost:8000`
+- Frontend: `http://localhost:3000`
+
+As seguintes telas foram verificadas no navegador com viewport desktop de
+1440 × 900:
+
+| Tela | Rota |
+| --- | --- |
+| Dashboard | `/` |
+| Pacientes | `/pacientes` |
+| Ficha do paciente | `/pacientes/ficha` |
+| Mensagens | `/mensagens` |
+| Triagem | `/triagem` |
+| Sistema | `/sistema` |
+
+Validações concluídas:
+
+- 20 testes Vitest passaram.
+- `npm run build` foi concluído.
+- A API respondeu em `/health` e `/api/v1/health`.
+- Todas as rotas da interface carregaram sem falha estrutural.
