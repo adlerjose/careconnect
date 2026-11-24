@@ -9,7 +9,9 @@ import logging
 import struct
 import wave
 from pathlib import Path
+from typing import Optional
 from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from google.genai import errors, types
 

@@ -48,9 +48,13 @@ class Settings(BaseSettings):
     # Banco de Dados (PostgreSQL)
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_PORT: int = 5432
-    POSTGRES_DB: str = "careconnect_db"
-    POSTGRES_USER: str = "postgres"
-    POSTGRES_PASSWORD: str = "changeme_in_production"
+    POSTGRES_DB: str = "careconnect"
+    POSTGRES_USER: str = "careconnect"
+    POSTGRES_PASSWORD: str = "careconnect_dev_pwd"
+    DATABASE_URL: str = (
+        "postgresql+asyncpg://careconnect:careconnect_dev_pwd"
+        "@localhost:5432/careconnect"
+    )
 
     # Provedor de IA (Google Gemini)
     GEMINI_API_KEY: str = ""
@@ -58,9 +62,10 @@ class Settings(BaseSettings):
     GEMINI_TIMEOUT: float = 30.0
 
     # Gateway de Mensagens (Evolution API)
-    EVOLUTION_API_URL: str = ""
-    EVOLUTION_API_KEY: str = ""
-    EVOLUTION_WEBHOOK_SECRET: str = ""
+    EVOLUTION_API_URL: str = "http://localhost:8080"
+    EVOLUTION_API_KEY: str = "troque_esta_chave_em_producao"
+    EVOLUTION_INSTANCE_NAME: str = "careconnect-dev"
+    EVOLUTION_WEBHOOK_SECRET: str = "change_me"
 
 
 @lru_cache
