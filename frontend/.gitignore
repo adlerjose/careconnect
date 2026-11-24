@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+*.local
+.env
+.env.*
+!.env.example
+public/fonts/*.woff
+public/fonts/*.woff2
+public/fonts/*.otf
+public/fonts/*.ttf
